@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Admin – Cloud AI Chatbot{% endblock %}
+{% block extra_css %}
+<style>
+.page-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 2rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; }
+.stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+.stat-value { font-size: 2rem; font-weight: 700; color: var(--accent2); }
+.section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+.log-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.log-table th { text-align: left; padding: 0.75rem 1rem; color: var(--muted); border-bottom: 1px solid var(--border); font-weight: 500; }
+.log-table td { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(255,255,255,.04); }
+.log-table tr:hover td { background: var(--surface2); }
+.badge { padding: 0.2rem 0.5rem; border-radius: 0.3rem; font-size: 0.75rem; font-weight: 600; }
+.badge-info     { background: rgba(108,99,255,.2); color: var(--accent2); }
+.badge-error    { background: rgba(239,68,68,.2);  color: var(--error); }
+.badge-warning  { background: rgba(245,158,11,.2); color: var(--warn); }
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-title">⚙️ Admin Panel</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Users</div>
+    <div class="stat-value">{{ total_users }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Active Users</div>
+    <div class="stat-value" style="color: var(--success);">{{ active_users }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Chats</div>
+    <div class="stat-value" style="color: var(--warn);">{{ total_chats }}</div>
+  </div>
+</div>
+
+<div style="margin-bottom: 1rem;">
+  <a href="{{ url_for('admin.users') }}" class="btn btn-ghost">Manage Users →</a>
+</div>
+
+<div class="section-title">Recent System Logs</div>
+<table class="log-table">
+  <thead><tr><th>Level</th><th>Module</th><th>Message</th><th>Time</th></tr></thead>
+  <tbody>
+    {% for log in recent_logs %}
+    <tr>
+      <td><span class="badge badge-{{ log.level.value }}">{{ log.level.value.upper() }}</span></td>
+      <td>{{ log.module }}</td>
+      <td>{{ log.message[:80] }}</td>
+      <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" style="text-align:center; color: var(--muted); padding: 2rem;">No logs yet</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
