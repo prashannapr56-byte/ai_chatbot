@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash, current_app
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash, current_app, session
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, limiter
 from app.models import User, Session, Log
@@ -66,8 +66,12 @@ def register():
         db.session.add(log)
         db.session.commit()
         
-        flash('Registration successful! You can now log in.', 'success')
-        return redirect(url_for('auth.login'))
+        # Auto-login and make session permanent/persistent
+        login_user(user, remember=True)
+        session.permanent = True
+        
+        flash('Registration successful! Welcome to your AI Chatbot.', 'success')
+        return redirect(url_for('dashboard.index'))
     
     except Exception as e:
         db.session.rollback()
@@ -135,18 +139,19 @@ def login():
     user.last_login = datetime.datetime.utcnow()
     
     session_token = str(uuid.uuid4())
-    session = Session(
+    db_session = Session(
         user_id=user.id,
         session_token=session_token,
-        expires_at=datetime.datetime.utcnow() + datetime.timedelta(days=30),
+        expires_at=datetime.datetime.utcnow() + datetime.timedelta(days=365),
         ip_address=request.remote_addr,
         user_agent=request.user_agent.string
     )
     
-    db.session.add(session)
+    db.session.add(db_session)
     db.session.commit()
     
-    login_user(user)
+    login_user(user, remember=True)
+    session.permanent = True
     
     # Log successful login
     log = Log(

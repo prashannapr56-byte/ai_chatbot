@@ -1,0 +1,14 @@
+[Unit]
+Description=Cloud AI Chatbot (Gunicorn)
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/cloud-ai-chatbot
+Environment="FLASK_ENV=production"
+ExecStart=/home/ubuntu/cloud-ai-chatbot/venv/bin/gunicorn -c gunicorn.conf.py run:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

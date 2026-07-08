@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -53,7 +54,9 @@ class Config:
     
     # Session
     SESSION_TYPE = 'filesystem'
-    PERMANENT_SESSION_LIFETIME = 3600  # 1 hour
+    PERMANENT_SESSION_LIFETIME = timedelta(days=365)
+    REMEMBER_COOKIE_DURATION = timedelta(days=365)
+    REMEMBER_COOKIE_REFRESH_EACH_REQUEST = True
 
 class DevelopmentConfig(Config):
     DEBUG = True
