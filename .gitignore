@@ -55,3 +55,6 @@ docker-compose.override.yml
 
 # Windows
 Thumbs.db
+
+# Vercel
+.vercel

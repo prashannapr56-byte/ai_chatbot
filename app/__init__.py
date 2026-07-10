@@ -39,10 +39,13 @@ def create_app(config_class=Config):
     # Setup logging
     setup_logging(app)
 
-    # Create all DB tables automatically in dev
+    # Create all DB tables automatically (skip if DB is unavailable)
     with app.app_context():
-        from app import models as _models
-        db.create_all()
+        try:
+            from app import models as _models
+            db.create_all()
+        except Exception as e:
+            app.logger.warning(f'Could not create DB tables: {e}')
     
     # Register blueprints
     from app.routes.auth import auth_bp
