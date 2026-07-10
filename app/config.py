@@ -17,7 +17,10 @@ class Config:
         db_port = os.environ.get('DB_PORT', '3306')
         SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
     else:
-        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///ai_chatbot.db'
+        db_url = os.environ.get('DATABASE_URL')
+        if not db_url and os.environ.get('VERCEL'):
+            db_url = 'sqlite:////tmp/ai_chatbot.db'
+        SQLALCHEMY_DATABASE_URI = db_url or 'sqlite:///ai_chatbot.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # AWS
