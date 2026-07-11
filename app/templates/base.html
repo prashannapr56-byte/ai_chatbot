@@ -13,29 +13,95 @@
             --accent: #6c63ff; --accent2: #a78bfa;
             --text: #e2e8f0; --muted: #94a3b8; --border: #2d3148;
             --success: #10b981; --error: #ef4444; --warn: #f59e0b;
+            --nav-h: 60px;
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
         a { color: var(--accent2); text-decoration: none; }
         a:hover { text-decoration: underline; }
-        .flash-messages { position: fixed; top: 1rem; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
-        .flash { padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; animation: slideIn 0.3s ease; }
+
+        /* ── Flash messages ── */
+        .flash-messages {
+            position: fixed; top: 1rem; right: 1rem; left: 1rem;
+            z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem;
+            pointer-events: none;
+        }
+        @media (min-width: 480px) { .flash-messages { left: auto; max-width: 360px; } }
+        .flash {
+            padding: 0.75rem 1.25rem; border-radius: 0.5rem;
+            font-size: 0.875rem; font-weight: 500;
+            animation: slideIn 0.3s ease; pointer-events: all;
+        }
         .flash.success { background: rgba(16,185,129,.15); border: 1px solid var(--success); color: var(--success); }
         .flash.error   { background: rgba(239,68,68,.15);  border: 1px solid var(--error);   color: var(--error);   }
         .flash.info    { background: rgba(107,99,255,.15); border: 1px solid var(--accent);   color: var(--accent2); }
         @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
-        nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; }
-        .nav-brand { font-size: 1.25rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+
+        /* ── Nav ── */
+        nav {
+            background: var(--surface); border-bottom: 1px solid var(--border);
+            padding: 0 1.25rem; height: var(--nav-h);
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 1000;
+            padding-left: max(1.25rem, env(safe-area-inset-left));
+            padding-right: max(1.25rem, env(safe-area-inset-right));
+        }
+        .nav-brand {
+            font-size: 1.1rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-links { display: flex; gap: 1.25rem; align-items: center; }
         .nav-links a { color: var(--muted); font-size: 0.9rem; font-weight: 500; transition: color .2s; }
         .nav-links a:hover { color: var(--text); text-decoration: none; }
-        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; transition: all .2s; text-decoration: none; }
+
+        /* Hamburger — hidden on desktop */
+        .nav-hamburger {
+            display: none; background: transparent; border: none;
+            color: var(--muted); cursor: pointer; padding: 0.5rem;
+            border-radius: 0.4rem; transition: background .2s;
+        }
+        .nav-hamburger:hover { background: var(--surface2); color: var(--text); }
+
+        /* Mobile nav drawer */
+        @media (max-width: 600px) {
+            .nav-hamburger { display: flex; align-items: center; justify-content: center; }
+            .nav-links {
+                display: none; position: absolute; top: var(--nav-h); left: 0; right: 0;
+                background: var(--surface); border-bottom: 1px solid var(--border);
+                flex-direction: column; align-items: stretch; gap: 0;
+                padding: 0.5rem 0;
+            }
+            .nav-links.open { display: flex; }
+            .nav-links a {
+                padding: 0.85rem 1.5rem; font-size: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links a:last-child { border-bottom: none; }
+            .nav-links .btn-ghost { margin: 0.5rem 1rem; border-radius: 0.5rem; }
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1.25rem; border-radius: 0.5rem;
+            font-size: 0.875rem; font-weight: 500; cursor: pointer;
+            border: none; transition: all .2s; text-decoration: none;
+            min-height: 40px; /* touch target */
+        }
         .btn-primary { background: var(--accent); color: #fff; }
         .btn-primary:hover { background: #5a52e0; text-decoration: none; }
         .btn-danger { background: rgba(239,68,68,.15); color: var(--error); border: 1px solid var(--error); }
         .btn-danger:hover { background: rgba(239,68,68,.25); text-decoration: none; }
         .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
         .btn-ghost:hover { color: var(--text); border-color: var(--accent); text-decoration: none; }
-        main { padding: 2rem; }
+
+        /* ── Main ── */
+        main {
+            padding: 1.5rem 1rem;
+            padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        }
+        @media (min-width: 640px) { main { padding: 2rem; } }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -50,8 +116,13 @@
 
 {% if current_user.is_authenticated %}
 <nav>
-    <span class="nav-brand">🤖 Cloud AI Chatbot</span>
-    <div class="nav-links">
+    <span class="nav-brand">🤖 Cloud AI</span>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
+    <div class="nav-links" id="nav-links">
         <a href="{{ url_for('dashboard.index') }}">Dashboard</a>
         <a href="{{ url_for('chat.index') }}">Chats</a>
         {% if current_user.is_admin() %}<a href="{{ url_for('admin.index') }}">Admin</a>{% endif %}
@@ -63,7 +134,7 @@
 <main>{% block content %}{% endblock %}</main>
 
 <script>
-    // Auto-dismiss flash messages after 4 seconds
+    // Auto-dismiss flash messages
     setTimeout(() => {
         document.querySelectorAll('.flash').forEach(el => {
             el.style.transition = 'opacity 0.5s';
@@ -71,6 +142,20 @@
             setTimeout(() => el.remove(), 500);
         });
     }, 4000);
+
+    // Hamburger toggle
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks  = document.getElementById('nav-links');
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            const open = navLinks.classList.toggle('open');
+            navToggle.setAttribute('aria-expanded', open);
+        });
+        // Close when a link is tapped
+        navLinks?.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => navLinks.classList.remove('open'));
+        });
+    }
 </script>
 {% block extra_js %}{% endblock %}
 </body>
