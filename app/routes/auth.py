@@ -79,7 +79,7 @@ def register():
         flash('An error occurred during registration. Please try again.', 'error')
         return render_template('auth/register.html')
 
-@auth_bp.route('/verify-email/')
+@auth_bp.route('/verify-email/<token>')
 def verify_email(token):
     payload = verify_token(token, 'email_verification')
     if not payload:

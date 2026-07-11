@@ -1,4 +1,5 @@
 import boto3
+import mimetypes
 from flask import current_app
 
 def get_s3_client():
@@ -11,18 +12,27 @@ def get_s3_client():
     )
 
 def upload_file_to_s3(file_obj, bucket_name, object_name=None):
-    """Upload a file to an S3 bucket."""
+    """Upload a file to an S3 bucket and return a public URL."""
     if not object_name:
         object_name = getattr(file_obj, 'filename', 'unnamed_file')
-        
+
+    # Detect MIME type for correct browser rendering
+    content_type, _ = mimetypes.guess_type(object_name)
+    content_type = content_type or 'application/octet-stream'
+
     s3_client = get_s3_client()
     s3_client.upload_fileobj(
         file_obj,
         bucket_name,
-        object_name
+        object_name,
+        ExtraArgs={
+            'ContentType': content_type,
+            'ACL': 'public-read'   # Makes file publicly accessible via URL
+        }
     )
-    # Return file URL
-    return f"https://{bucket_name}.s3.{current_app.config['AWS_DEFAULT_REGION']}.amazonaws.com/{object_name}"
+    # Return public file URL
+    region = current_app.config['AWS_DEFAULT_REGION']
+    return f"https://{bucket_name}.s3.{region}.amazonaws.com/{object_name}"
 
 def list_files_in_s3(bucket_name):
     """List files in the S3 bucket."""
