@@ -8,7 +8,7 @@ api_bp = Blueprint('api', __name__)
 
 @api_bp.route('/health')
 def health():
-    return jsonify({'status': 'ok', 'message': 'AI Chatbot API is running'})
+    return jsonify({'status': 'ok', 'message': 'Cleanfix AI API is running'})
 
 
 @api_bp.route('/chats', methods=['GET'])

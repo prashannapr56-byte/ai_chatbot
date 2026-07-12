@@ -70,7 +70,7 @@ def register():
         login_user(user, remember=True)
         session.permanent = True
         
-        flash('Registration successful! Welcome to your AI Chatbot.', 'success')
+        flash('Registration successful! Welcome to your Cleanfix AI.', 'success')
         return redirect(url_for('dashboard.index'))
     
     except Exception as e:
@@ -200,7 +200,7 @@ def forgot_password():
         token = generate_password_reset_token(user.id)
         reset_url = url_for('auth.reset_password', token=token, _external=True)
         send_email(
-            subject="Password Reset – AI Chatbot",
+            subject="Password Reset – Cleanfix AI",
             recipient=user.email,
             template='reset_password',
             user=user,

@@ -1,5 +1,5 @@
 [Unit]
-Description=Cloud AI Chatbot (Gunicorn)
+Description=Cleanfix AI (Gunicorn)
 After=network.target
 
 [Service]

@@ -29,4 +29,4 @@ def setup_logging(app):
         app.logger.warning('File logging disabled (read-only filesystem)')
 
     app.logger.setLevel(logging.INFO)
-    app.logger.info('AI Chatbot startup')
+    app.logger.info('Cleanfix AI startup')

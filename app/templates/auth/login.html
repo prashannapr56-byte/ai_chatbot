@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Login – Cloud AI Chatbot{% endblock %}
+{% block title %}Login – Cleanfix AI{% endblock %}
 {% block extra_css %}
 <style>
 .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
@@ -29,7 +29,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 <div class="auth-wrap">
   <div class="auth-card">
     <div class="auth-title">Welcome back 👋</div>
-    <div class="auth-sub">Sign in to your AI Chatbot account</div>
+    <div class="auth-sub">Sign in to your Cleanfix AI account</div>
     <form method="POST" action="{{ url_for('auth.login') }}">
       <div class="form-group">
         <label for="email">Email</label>
